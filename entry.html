@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>エントリーシート提出 - 採用選考</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --border: #cbd5e1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2.5rem 1rem;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 660px;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+      padding: 2.5rem;
+    }
+    h1 { font-size: 1.45rem; margin-bottom: 0.3rem; }
+    .company-tag { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.3rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; }
+    p.desc { font-size: 0.9rem; color: #64748b; margin-bottom: 1.5rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.35rem; }
+    .required { color: #ef4444; margin-left: 4px; }
+    input[type="text"], input[type="email"], textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    textarea { height: 110px; resize: vertical; line-height: 1.5; }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+    }
+    .btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.9rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 1rem;
+    }
+    .btn:hover { background: var(--primary-hover); }
+    .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+    
+    .success-card {
+      display: none;
+      text-align: center;
+      padding: 1.5rem 0;
+    }
+    .success-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .notice-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      color: #166534;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="formSection">
+    <div class="company-tag" id="companyTag">採用エントリー</div>
+    <h1>エントリーシート提出</h1>
+    <p class="desc">以下の項目をご入力の上、ご提出ください。受付完了後、控えメールが自動送信されます。</p>
+
+    <form id="entryForm" onsubmit="submitForm(event)">
+      <div class="form-group">
+        <label>氏名<span class="required">*</span></label>
+        <input type="text" name="name" required placeholder="例: 面接 太郎">
+      </div>
+
+      <div class="form-group">
+        <label>メールアドレス<span class="required">*</span></label>
+        <input type="email" name="email" required placeholder="example@domain.com">
+      </div>
+
+      <div class="form-group">
+        <label>自己PR<span class="required">*</span></label>
+        <textarea name="pr" required placeholder="強みや大切にしている価値観などを入力してください。"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>学生時代に最も力を入れたこと（ガクチカ）<span class="required">*</span></label>
+        <textarea name="gakuchika" required placeholder="取り組んだ活動、直面した困難や工夫した点などを入力してください。"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>志望動機<span class="required">*</span></label>
+        <textarea name="motivation" required placeholder="志望理由や入社後に実現したいことを入力してください。"></textarea>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn">エントリーシートを提出する</button>
+    </form>
+  </div>
+
+  <div class="success-card" id="successSection">
+    <div class="success-icon">📄</div>
+    <h2 id="successTitle">エントリーを受け付けました</h2>
+    <p style="color: #64748b; margin-top: 0.5rem;">ご入力いただいたメールアドレス宛に控えメールを送信いたしました。</p>
+    
+    <div class="notice-box">
+      <strong>【今後の選考プロセスについて】</strong><br>
+      ご提出いただいた内容をもとに書類選考を実施いたします。<br>
+      書類選考を通過された方には、別途メールにて<strong>「AI対話型面接」の受検専用URL</strong>をご案内いたしますので、今しばらくお待ちください。
+    </div>
+
+    <p style="font-size: 0.85rem; color: #94a3b8;">この画面は閉じていただいて構いません。</p>
+  </div>
+</div>
+
+<script>
+const companyCode = new URLSearchParams(window.location.search).get('company') || 'default';
+
+async function submitForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerText = '提出処理中...';
+
+  const form = document.getElementById('entryForm');
+  const formData = new FormData(form);
+
+  const payload = {
+    name: formData.get('name'),
+    email: formData.get('email'),
+    company_code: companyCode,
+    entry_sheet_data: {
+      pr: formData.get('pr'),
+      gakuchika: formData.get('gakuchika'),
+      motivation: formData.get('motivation')
+    }
+  };
+
+  try {
+    const res = await fetch('/api/register.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    if (data.company_name) {
+      document.getElementById('successTitle').innerText = `${data.company_name} へのエントリーを受け付けました`;
+    }
+
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('successSection').style.display = 'block';
+  } catch (err) {
+    alert('提出エラー: ' + err.message);
+    btn.disabled = false;
+    btn.innerText = 'エントリーシートを提出する';
+  }
+}
+</script>
+
+</body>
+</html>
